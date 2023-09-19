@@ -1,0 +1,98 @@
+.my-masonry-grid {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    margin-left: -26px;
+    width: auto;
+    /* width: 48%; */
+  }
+  
+  .my-masonry-grid_column {
+    /* padding-left: 16px; */
+    padding: 23px;
+    background-clip: padding-box;
+  }
+  
+  .masonry-item {
+    margin-bottom: 16px;
+    transition: transform 0.9s ease-in-out;
+  }
+
+  /* .image-item {
+    width: 120%;
+    height: 120%;
+    border-radius: 10px;
+  } */
+
+  .image-tag {
+    font-size: 13px;
+    font-weight: 600;
+    color: gray;
+    opacity: 0.8;
+    text-transform: uppercase;
+  }
+
+  .masonry-item.dragging {
+    opacity: 0.5;
+  }  
+
+
+  .masonry-item img {
+    /* Add your existing styles here */
+    width: 120%;
+    height: 120%;
+    border-radius: 10px;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .masonry-item img {
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .masonry-item.dragging img {
+    transform: scale(1.1); /* Adjust scale as needed */
+  }
+
+  .trigger-transition {
+    transition: transform 0.9s ease-in-out; /* Same as the duration in step 1 */
+  }
+  
+  
+
+ .sign-in-out-btn {
+    margin-top: 30px;
+ }
+
+ .drop-area {
+  width: 100px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  top: 0;
+  left: 0;
+  background-color: #212529;
+  border-radius: 50%;
+  padding: 30px;
+ }
+
+ .drop-area-container {
+  padding-top: 10px;
+  position: absolute;
+  text-align: center;
+  top: 0;
+  left: 0;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* width: 120px; */
+  /* height: 120px; */
+ }
+
+ .drop-area-container p {
+  font-size: 11px;
+  font-weight: 600px;
+ }

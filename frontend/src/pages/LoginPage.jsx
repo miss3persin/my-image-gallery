@@ -11,6 +11,7 @@ import Loader from '../components/Loader';
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+      const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -21,18 +22,20 @@ const LoginPage = () => {
 
     useEffect(() => {
         if (userInfo) {
-            navigate('/');
+            navigate('/user');
         }
     }, [navigate, userInfo]);
 
     const submitHandler = async(e) => {
         e.preventDefault();
         try {
+            setLoading(true)
            const res = await login({ email, password }).unwrap();
            dispatch(setCredentials({...res}));
            navigate('/');
         } catch (err) {
             toast.error(err?.data?.message || err.error);
+            setLoading(false)
         }
     };
 
@@ -60,12 +63,13 @@ const LoginPage = () => {
                 ></Form.Control>
             </Form.Group>
 
-            {isLoading && <Loader/>}
+            {/* {isLoading && <Loader/>} */}
+            {loading ? <Loader/> : (
 
             <Button type='submit' variant='primary' className='mt-3'>
                 Sign In
             </Button>
-
+)}
             <Row className='py-3'>
                 <Col>
                     New Customer? <Link to='/register'>Register</Link>
