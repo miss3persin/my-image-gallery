@@ -1,5 +1,6 @@
 import { Container, Card, Button } from 'react-bootstrap';
 import {LinkContainer} from 'react-router-bootstrap';
+import imagiie from '../assets/imagiie.png'
 
 const Hero = () => {
   return (
@@ -10,6 +11,7 @@ const Hero = () => {
           <p className='text-center mb-4'>
             Welcome To the <strong>Image Gallery</strong>! Wanna upload random images and drag them around on screen? Then sign up to get started or sign in if you already have an account!
           </p>
+      
           <div className='d-flex'>
             <LinkContainer to='/login'>
             <Button variant='primary' className='me-3'>
@@ -23,6 +25,7 @@ const Hero = () => {
             </Button>
             </LinkContainer>
           </div>
+          <img src={imagiie} alt="image" className='text-center mt-4 w-75 h-75 rounded'/>
         </Card>
       </Container>
     </div>
