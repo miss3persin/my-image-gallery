@@ -17,17 +17,7 @@ const LoginPage = () => {
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
-    // const dispatch = useDispatch();
 
-    // const [login, {isLoading}] = useLoginMutation();
-
-    // const {userInfo} = useSelector((state) => state.auth);
-
-    // useEffect(() => {
-    //     if (userInfo) {
-    //         navigate('/user');
-    //     }
-    // }, [navigate, userInfo]);
 
     const submitHandler = async(e) => {
         e.preventDefault();
@@ -45,18 +35,6 @@ const LoginPage = () => {
             navigate('/user');
         }).catch((error) => console.log(error));
     };
-    // const submitHandler = async(e) => {
-    //     e.preventDefault();
-    //     try {
-    //         setLoading(true)
-    //        const res = await login({ email, password }).unwrap();
-    //        dispatch(setCredentials({...res}));
-    //        navigate('/');
-    //     } catch (err) {
-    //         toast.error(err?.data?.message || err.error);
-    //         setLoading(false)
-    //     }
-    // };
 
   return (
     <FormContainer>
@@ -82,7 +60,7 @@ const LoginPage = () => {
                 ></Form.Control>
             </Form.Group>
 
-            {/* {isLoading && <Loader/>} */}
+
             {loading ? <Loader/> : (
 
             <Button type='submit' variant='primary' className='mt-3'>
