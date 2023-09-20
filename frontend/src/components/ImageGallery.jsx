@@ -151,17 +151,7 @@ const ImageGallery = () => {
               ))}
             </Masonry>
           )}
-          <div className="d-flex sign-in-out-btn">
-            <LinkContainer to="/login">
-              <Button variant="primary" className="me-3">
-                Sign In
-              </Button>
-            </LinkContainer>
 
-            <LinkContainer to="/register">
-              <Button variant="secondary">Sign Up</Button>
-            </LinkContainer>
-          </div>
         </Card>
       </Container>
     </div>
