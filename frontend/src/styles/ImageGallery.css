@@ -132,3 +132,23 @@
   font-weight: 600px;
   padding-top: 10px;
  }
+
+
+ /* md */
+@media (max-width: 785px) {
+  .drop-area-container-2 {
+    display: none;
+  }
+
+  .drop-area-container {
+    position: static;
+    width: 100%;
+    height: 100%;
+  }
+
+  .drop-area {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+  }
+}

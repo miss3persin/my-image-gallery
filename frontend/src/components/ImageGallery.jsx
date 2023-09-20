@@ -13,7 +13,7 @@ const breakpointColumnsObj = {
   default: 5,
   1100: 3,
   700: 2,
-  500: 1,
+  500: 2,
 };
 
 const ImageGallery = () => {
@@ -39,16 +39,6 @@ const ImageGallery = () => {
         setLoading(false);
       });
   }, []);
-
-  //   const reorderImages = (draggedImage, targetImage) => {
-  //     const updatedImages = [...images];
-  //     const draggedIndex = updatedImages.findIndex(image => image.id === draggedImage.id);
-  //     const targetIndex = updatedImages.findIndex(image => image.id === targetImage.id);
-
-  //     [updatedImages[draggedIndex], updatedImages[targetIndex]] = [targetImage, draggedImage];
-
-  //     return updatedImages;
-  //   };
 
   const handleDragStart = (e, image) => {
     setDraggedImage(image);
@@ -76,7 +66,7 @@ const ImageGallery = () => {
       updatedImages.splice(draggedIndex, 1)[0]
     );
 
-    setToggleRender((prevState) => !prevState); // Toggle a state variable to force a re-render
+    setToggleRender((prevState) => !prevState);
     setImages(updatedImages);
 
     setDraggedImage(null);

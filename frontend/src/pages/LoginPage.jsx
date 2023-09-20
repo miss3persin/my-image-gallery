@@ -1,5 +1,4 @@
-
- {useState} from 'react';
+import {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import {Form, Button, Row, Col} from 'react-bootstrap';
 // import {useDispatch, useSelector} from 'react-redux';
@@ -30,13 +29,14 @@ const LoginPage = () => {
             return;
         }
         signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            toast.success("Logged In successful");
-            setLoading(false);
-            navigate('/user');
-        }).catch((error) => {toast.error(error.message);
+            .then((userCredential) => {
+                toast.success("Logged In successful");
                 setLoading(false);
- console.log(error)});
+                navigate('/user');
+            }).catch((error) => {
+                toast.error("Invalid email/password");
+                setLoading(false);
+            });
     };
 
   return (
