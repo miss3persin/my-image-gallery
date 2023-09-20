@@ -1,4 +1,5 @@
-import {useState} from 'react';
+
+ {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import {Form, Button, Row, Col} from 'react-bootstrap';
 // import {useDispatch, useSelector} from 'react-redux';
@@ -43,7 +44,9 @@ const LoginPage = () => {
             toast.success("Logged In successful");
             setLoading(false);
             navigate('/user');
-        }).catch((error) => console.log(error));
+        }).catch((error) => {toast.error(error.message);
+                setLoading(false);
+ console.log(error)});
     };
     // const submitHandler = async(e) => {
     //     e.preventDefault();
