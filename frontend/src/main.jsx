@@ -23,8 +23,8 @@ const router = createBrowserRouter(
       <Route path='/search/:searchTerm' element={<SearchGallery/>}/>
       {/* Private Routes */}
       <Route path='' element={<PrivateRoute/>}>
-      <Route path='/profile' element={<ProfilePage/>}/>
       <Route path='/user' element={<UserPage/>}/>
+      <Route path='/profile' element={<ProfilePage/>}/>
       </Route>
     </Route>
   )

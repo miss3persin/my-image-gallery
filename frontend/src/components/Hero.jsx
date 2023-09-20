@@ -6,11 +6,9 @@ const Hero = () => {
     <div className=' py-5'>
       <Container className='d-flex justify-content-center'>
         <Card className='p-5 d-flex flex-column align-items-center hero-card bg-light w-75'>
-          <h1 className='text-center mb-4'>MERN Authentication</h1>
+          <h1 className='text-center mb-4'>Image Gallery</h1>
           <p className='text-center mb-4'>
-            This is a boilerplate for MERN authentication that stores a JWT in
-            an HTTP-Only cookie. It also uses Redux Toolkit and the React
-            Bootstrap library
+            Welcome To the <strong>Image Gallery</strong>! Wanna upload random images and drag them around on screen? Then sign up to get started or sign in if you already have an account!
           </p>
           <div className='d-flex'>
             <LinkContainer to='/login'>

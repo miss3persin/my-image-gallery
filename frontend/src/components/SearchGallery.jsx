@@ -1,12 +1,13 @@
 import { Container, Card, Button } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Masonry from "react-masonry-css";
 import "../styles/ImageGallery.css";
 import Loader from "./Loader";
-import { v4 as uuidv4 } from "uuid";
+import { useAuthState } from 'react-firebase-hooks/auth';
+import {auth} from '../firebase';
 
 const apiKey = "39541743-4842b36dfb16e3acc7079f258";
 const breakpointColumnsObj = {
@@ -17,6 +18,7 @@ const breakpointColumnsObj = {
 };
 
 const SearchGallery = () => {
+  const [user] = useAuthState(auth);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [draggedImage, setDraggedImage] = useState(null);
@@ -24,7 +26,6 @@ const SearchGallery = () => {
   const [toggleRender, setToggleRender] = useState(false);
   const { searchTerm } = useParams();
 
-  const dropContainerRef = useRef(null);
 
   useEffect(() => {
     console.log(searchTerm);
@@ -50,15 +51,6 @@ const SearchGallery = () => {
     }
   };
 
-  //   const reorderImages = (draggedImage, targetImage) => {
-  //     const updatedImages = [...images];
-  //     const draggedIndex = updatedImages.findIndex(image => image.id === draggedImage.id);
-  //     const targetIndex = updatedImages.findIndex(image => image.id === targetImage.id);
-
-  //     [updatedImages[draggedIndex], updatedImages[targetIndex]] = [targetImage, draggedImage];
-
-  //     return updatedImages;
-  //   };
 
   const handleDragStart = (e, image) => {
     setDraggedImage(image);
@@ -92,83 +84,103 @@ const SearchGallery = () => {
     setTargetImage(null);
   };
 
-  const handleLocalImageDrop = (e) => {
-    e.preventDefault();
-    const files = e.dataTransfer.files;
-    handleLocalImageFiles(files);
-  };
-
-  const handleLocalImageFiles = (files) => {
-    const uploadedImages = Array.from(files).map((file) => ({
-      id: uuidv4(),
-      webformatURL: URL.createObjectURL(file),
-      tags: "Uploaded Image",
-    }));
-
-    setImages([...images, ...uploadedImages]);
-  };
-
   return (
-    <div
-      className="py-5"
-      ref={dropContainerRef}
-      onDragOver={(e) => e.preventDefault()}
-      //   onDrop={handleLocalImageDrop}
-    >
+    <div>
       <Container className="d-flex justify-content-center">
         <Card className="p-5 d-flex flex-column align-items-center hero-card bg-light">
           <h1 className="text-center mb-4">Search Results For: {searchTerm}</h1>
+          <p className="text-center mb-4">Drag and Drop features only available for Signed In users.</p>
           {loading ? (
             <Loader />
           ) : (
-            <Masonry
+            <>
+              {user ? (
+                <>
+                <Masonry
               breakpointCols={breakpointColumnsObj}
               className="my-masonry-grid"
               columnClassName="my-masonry-grid_column"
             >
-              {images
-                .slice()
-                .reverse()
-                .map((image) => (
-                  <div
-                    key={image.id}
-                    className={`masonry-item ${
-                      toggleRender && "trigger-transition"
-                    } ${
-                      draggedImage && draggedImage.id === image.id
-                        ? "dragging"
-                        : ""
-                    }`}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, image)}
-                    onDragOver={(e) => handleDragOver(e, image)}
-                    onDrop={handleDrop}
-                  >
-                    <img
-                      src={image.webformatURL}
-                      alt={image.tags}
-                      className="image-item"
-                    />
-                    <p className="image-tag">
-                      {image.tags.split(",").map((tag) => (
-                        <span key={tag}>#{tag.trim()} </span>
-                      ))}
-                    </p>
-                  </div>
-                ))}
-            </Masonry>
+                {images
+                  .slice()
+                  .reverse()
+                  .map((image) => (
+                    <div
+                      key={image.id}
+                      className={`masonry-item ${
+                        toggleRender && "trigger-transition"
+                      } ${
+                        draggedImage && draggedImage.id === image.id
+                          ? "dragging"
+                          : ""
+                      }`}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, image)}
+                      onDragOver={(e) => handleDragOver(e, image)}
+                      onDrop={handleDrop}
+                    >
+                      <img
+                        src={image.webformatURL}
+                        alt={image.tags}
+                        className="image-item"
+                      />
+                      <p className="image-tag">
+                        {image.tags.split(",").map((tag) => (
+                          <span key={tag}>#{tag.trim()} </span>
+                        ))}
+                      </p>
+                    </div>
+                  ))}
+                  </Masonry>
+                  </>
+              ) : (
+                <>
+                <Masonry
+              breakpointCols={breakpointColumnsObj}
+              className="my-masonry-grid"
+              columnClassName="my-masonry-grid_column"
+            >
+                {images.slice().reverse().map((image) => (
+                    <div
+                      key={image.id}
+                      className= "masonry-item"
+                    >
+                      <img
+                        src={image.webformatURL}
+                        alt={image.tags}
+                        className="image-item"
+                      />
+                      <p className="image-tag">
+                        {image.tags.split(",").map((tag) => (
+                          <span key={tag}>#{tag.trim()} </span>
+                        ))}
+                      </p>
+                    </div>
+                  ))}
+                  </Masonry>
+                  </>
+              )}
+            </>
           )}
-          <div className="d-flex sign-in-out-btn">
+            {user ? (
+              <div className="d-flex sign-in-out-btn">
+              <LinkContainer to="/user">
+                <Button variant="secondary">Back</Button>
+              </LinkContainer>
+            </div>
+            ) : (
+              <div className="d-flex sign-in-out-btn">
             <LinkContainer to="/login">
               <Button variant="primary" className="me-3">
                 Sign In
               </Button>
             </LinkContainer>
 
-            <LinkContainer to="/register">
-              <Button variant="secondary">Sign Up</Button>
+            <LinkContainer to="/user">
+              <Button variant="secondary">Back</Button>
             </LinkContainer>
           </div>
+            )}
         </Card>
       </Container>
     </div>

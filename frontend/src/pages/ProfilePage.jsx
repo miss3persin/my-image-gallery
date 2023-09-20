@@ -1,48 +1,40 @@
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import {Form, Button} from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
-import {useDispatch, useSelector} from 'react-redux';
+import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import Loader from '../components/Loader';
-import {setCredentials} from '../slices/authSlice';
-import { useUpdateUserMutation } from '../slices/usersApiSlice';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import {auth} from '../firebase';
+import { updateProfile } from 'firebase/auth';
+import '../styles/ProfilePage.css'
 
 const ProfilePage = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [user] = useAuthState(auth);
+    const [name, setName] = useState(user?.displayName || '');
+const [email, setEmail] = useState(user?.email || '');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const dispatch = useDispatch();
-
-    const {userInfo} = useSelector((state) => state.auth);
-
-    const [updateProfile, {isLoading}] = useUpdateUserMutation();
-
-
-    useEffect(() => {
-        setName(userInfo.name);
-        setEmail(userInfo.email);
-    }, [userInfo.name, userInfo.email]);
+    const navigate = useNavigate();
 
     const submitHandler = async(e) => {
         e.preventDefault();
-        if(password !== confirmPassword) {
-            toast.err('Passwords do not match')
-        }else{
+        setIsLoading(true);
             try {
-                const res = await updateProfile({
-                    _id: userInfo._Id,
-                    name,
-                    email,
-                    password
-                }).unwrap();
-                dispatch(setCredentials({...res}));
-                toast.success('Profile updated')
+                await updateProfile(auth.currentUser, {
+                    displayName: name,
+                    email: email,
+                });
+                toast.success('Profile updated');
             } catch (err) {
-                toast.error(err?.data?.message || err.error);
+                toast.error(err?.message || err.code);
+            } finally {
+                setIsLoading(false);
             }
-        }
+    }
+
+    const handleCancel = () => {
+        navigate('/user');
     }
 
   return (
@@ -54,7 +46,7 @@ const ProfilePage = () => {
                 <Form.Label>Name</Form.Label>
                 <Form.Control
                     type='text'
-                    placeholder='Enter Name'
+                    placeholder= {user?.displayName || 'Enter Name'}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 ></Form.Control>
@@ -70,32 +62,16 @@ const ProfilePage = () => {
                 ></Form.Control>
             </Form.Group>
 
-            <Form.Group className="my-2" controlId="password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                    type='password'
-                    placeholder='Enter Password'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                ></Form.Control>
-            </Form.Group>
-
-            <Form.Group className="my-2" controlId="confirmPassword">
-                <Form.Label>Confirm Password</Form.Label>
-                <Form.Control
-                    type='password'
-                    placeholder='Confirm Password'
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                ></Form.Control>
-            </Form.Group>
-
-            {isLoading && <Loader/>}
-
-
+            {isLoading ? <Loader/> : (
+                <div className='d-flex update-cancel-btn'>
             <Button type='submit' variant='primary' className='mt-3'>
                 Update
             </Button>
+            <Button variant='secondary' className='mt-3'  onClick={handleCancel}>
+                        Back
+                    </Button>
+                    </div>
+)}
         </Form>
     </FormContainer>
   )

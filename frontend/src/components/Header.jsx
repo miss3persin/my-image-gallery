@@ -1,31 +1,44 @@
 import { Navbar, Nav, Container, NavDropdown, Form, FormControl, Button } from "react-bootstrap";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 // eslint-disable-next-line no-unused-vars
-import { useSelector, useDispatch } from "react-redux";
+// import { useSelector, useDispatch } from "react-redux";
 import {useNavigate} from 'react-router-dom';
 import { LinkContainer } from "react-router-bootstrap";
-import { useLogoutMutation } from "../slices/usersApiSlice";
-import {logout} from '../slices/authSlice';
+// import { useLogoutMutation } from "../slices/usersApiSlice";
+// import {logout} from '../slices/authSlice';
 import { useState } from "react";
+import { useAuthState } from 'react-firebase-hooks/auth';
+import {auth} from '../firebase';
 
 const Header = () => {
-  const { userInfo } = useSelector((state) => state.auth);
+  // const { userInfo } = useSelector((state) => state.auth);
   const [searchTerm, setSearchTerm] = useState('');
+  const [user] = useAuthState(auth);
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const  [logoutApiCall] = useLogoutMutation();
 
   const logoutHandler = async() => {
     try {
-        await logoutApiCall().unwrap();
-        dispatch(logout());
-        navigate('/');
+      auth.signOut();
+      navigate('/');
     } catch (err) {
-        console.log(err);
+      console.log(err);
     }
   }
+
+
+  // const  [logoutApiCall] = useLogoutMutation();
+
+  // const logoutHandler = async() => {
+  //   try {
+  //       await logoutApiCall().unwrap();
+  //       dispatch(logout());
+  //       navigate('/');
+  //   } catch (err) {
+  //       console.log(err);
+  //   }
+  // }
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -36,12 +49,6 @@ const Header = () => {
       handleSearchSubmit();
     }
   }
-
-  // const handleSearch = () => {
-  //   if (searchTerm.trim() !== '') {
-  //     navigate(`/search/${searchTerm}`);
-  //   }
-  // }
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -69,11 +76,11 @@ const Header = () => {
 
 
             <Nav className="ms-auto">
-                {userInfo ? 
+                {user ? 
                 <>
-                    <NavDropdown title= {userInfo.name} id='username'>
+                    <NavDropdown title= {user.displayName || user.email} id='username'>
                         <LinkContainer to='/profile'>
-                            <NavDropdown.Item>
+                            <NavDropdown.Item> 
                                 Profile
                             </NavDropdown.Item>
                         </LinkContainer>

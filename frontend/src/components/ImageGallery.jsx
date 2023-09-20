@@ -1,11 +1,12 @@
 import { Container, Card, Button } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect} from "react";
 import axios from "axios";
 import Masonry from "react-masonry-css";
 import "../styles/ImageGallery.css";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
+import plus from "../assets/icons8-plus.svg"
 
 const apiKey = "39541743-4842b36dfb16e3acc7079f258";
 const breakpointColumnsObj = {
@@ -109,8 +110,19 @@ const ImageGallery = () => {
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleLocalImageDrop}
           >
+            <img src={plus} alt="" />
           </div>
             <p>Drag and Drop Your Images Here</p>
+          </div>
+          <div className="drop-area-container-2">
+          <div
+            className="drop-area-2"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={handleLocalImageDrop}
+          >
+            <img src={plus} alt="" />
+          </div>
+            <p>Or here </p>
           </div>
           {loading ? (
             <Loader />

@@ -1,43 +1,62 @@
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import {Form, Button, Row, Col} from 'react-bootstrap';
-import {useDispatch, useSelector} from 'react-redux';
+// import {useDispatch, useSelector} from 'react-redux';
 import FormContainer from '../components/FormContainer';
-import {useLoginMutation} from '../slices/usersApiSlice';
-import {setCredentials} from '../slices/authSlice';
+// import {useLoginMutation} from '../slices/usersApiSlice';
+// import {setCredentials} from '../slices/authSlice';
 import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Loader from '../components/Loader';
+import {auth} from '../firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-      const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
-    const [login, {isLoading}] = useLoginMutation();
+    // const [login, {isLoading}] = useLoginMutation();
 
-    const {userInfo} = useSelector((state) => state.auth);
+    // const {userInfo} = useSelector((state) => state.auth);
 
-    useEffect(() => {
-        if (userInfo) {
-            navigate('/user');
-        }
-    }, [navigate, userInfo]);
+    // useEffect(() => {
+    //     if (userInfo) {
+    //         navigate('/user');
+    //     }
+    // }, [navigate, userInfo]);
 
     const submitHandler = async(e) => {
         e.preventDefault();
-        try {
-            setLoading(true)
-           const res = await login({ email, password }).unwrap();
-           dispatch(setCredentials({...res}));
-           navigate('/');
-        } catch (err) {
-            toast.error(err?.data?.message || err.error);
+        setLoading(true)
+
+        if (!email || !password) {
+            toast.error("Please fill in all fields");
             setLoading(false)
+            return;
         }
+        signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            toast.success("Logged In successful");
+            setLoading(false);
+            navigate('/user');
+        }).catch((error) => console.log(error));
     };
+    // const submitHandler = async(e) => {
+    //     e.preventDefault();
+    //     try {
+    //         setLoading(true)
+    //        const res = await login({ email, password }).unwrap();
+    //        dispatch(setCredentials({...res}));
+    //        navigate('/');
+    //     } catch (err) {
+    //         toast.error(err?.data?.message || err.error);
+    //         setLoading(false)
+    //     }
+    // };
 
   return (
     <FormContainer>

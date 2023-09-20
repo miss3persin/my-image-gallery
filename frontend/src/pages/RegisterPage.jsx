@@ -1,46 +1,48 @@
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import {Link} from 'react-router-dom';
 import {Form, Button, Row, Col} from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
-import {useDispatch, useSelector} from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import {toast} from 'react-toastify';
 import Loader from '../components/Loader';
-import { useRegisterMutation } from '../slices/usersApiSlice';
-import {setCredentials} from '../slices/authSlice';
+import {auth} from '../firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RegisterPage = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
-    const {userInfo} = useSelector((state) => state.auth);
-
-    const [register, {isLoading}] = useRegisterMutation();
-
-    useEffect(() => {
-        if (userInfo) {
-            navigate('/');
-        }
-    }, [navigate, userInfo]);
 
     const submitHandler = async(e) => {
         e.preventDefault();
-        if(password !== confirmPassword) {
-            toast.err('Passwords do not match')
-        }else{
-            try {
-                const res = await register({ name, email, password }).unwrap();
-                dispatch(setCredentials({...res}));
-                navigate('/');
-            } catch (err) {
-                    toast.error(err?.data?.message || err.error);
-            }
+        setLoading(true)
+        if (!name || !email || !password || !confirmPassword) {
+            toast.error("Please fill in all fields");
+            setLoading(false)
+            return;
         }
+
+        if (password !== confirmPassword) {
+            toast.error("Passwords do not match");
+            setLoading(false);
+            return;
+        }
+        createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            toast.success("Registration successful");
+            setLoading(false);
+            navigate('/user');
+        }).catch((error) => {
+            console.log(error);
+            toast.error(error?.data?.message || error.error);
+            setLoading(false)
+        });
     }
 
   return (
@@ -88,11 +90,11 @@ const RegisterPage = () => {
                 ></Form.Control>
             </Form.Group>
 
-            {isLoading && <Loader/>}
+            {loading ? <Loader/> : (
             <Button type='submit' variant='primary' className='mt-3' >
                 Sign Up
             </Button>
-
+)}
             <Row className='py-3'>
                 <Col>
                     Already have an account? <Link to='/login'>Login</Link>
