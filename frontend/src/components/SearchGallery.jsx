@@ -89,7 +89,7 @@ const SearchGallery = () => {
       <Container className="d-flex justify-content-center">
         <Card className="p-5 d-flex flex-column align-items-center hero-card bg-light">
           <h1 className="text-center mb-4">Search Results For: {searchTerm}</h1>
-          <p className="text-center mb-4">Drag and Drop features only available for Signed In users.</p>
+          {user ? ("") : (<p className="text-center mb-4">Drag and Drop features only available for Signed In users.</p>)}
           {loading ? (
             <Loader />
           ) : (
